@@ -1,17 +1,16 @@
 import React, { useState, useContext } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { FirebaseContext } from '../firebase';
-import { withRedirectIfAuthed } from '../session';
 import * as ROUTES from '../constants/routes';
 
-export const Register = withRedirectIfAuthed(() => {
+export function Register() {
     return (
         <React.Fragment>
             <h1>Register</h1>
             <RegisterForm />
         </React.Fragment>
     );
-});
+}
 
 const initialState = {
     username: '',
@@ -40,7 +39,6 @@ const RegisterForm = withRouter(props => {
         try {
             const authUser = await firebase.registerUser(email, password1);
             await firebase.user(authUser.user.uid).set({ username, email });
-            setState({ ...initialState });
             props.history.push(ROUTES.HOME);
         } catch (error) {
             setState({

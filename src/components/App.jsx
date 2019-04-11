@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import { AuthUserContext } from '../session';
 import { FirebaseContext } from '../firebase';
 import { Navigation } from './Navigation';
@@ -30,6 +30,36 @@ export function App() {
         return () => listener();
     }, []);
 
+    function AnonRoute({ component: Component, ...rest }) {
+        return (
+            <Route
+                {...rest}
+                render={props =>
+                    state.authUser !== null ? (
+                        <Redirect to={ROUTES.HOME} />
+                    ) : (
+                        <Component {...props} />
+                    )
+                }
+            />
+        );
+    }
+
+    function AuthedRoute({ component: Component, ...rest }) {
+        return (
+            <Route
+                {...rest}
+                render={props =>
+                    state.authUser === null ? (
+                        <Redirect to={ROUTES.SIGN_IN} />
+                    ) : (
+                        <Component {...props} />
+                    )
+                }
+            />
+        );
+    }
+
     return (
         <AuthUserContext.Provider value={state.authUser}>
             {state.loading ? (
@@ -38,11 +68,15 @@ export function App() {
                 <Router>
                     <Navigation />
                     <hr />
-                    <Route exact path={ROUTES.LANDING} component={Landing} />
-                    <Route path={ROUTES.HOME} component={Home} />
-                    <Route path={ROUTES.SIGN_IN} component={SignIn} />
-                    <Route path={ROUTES.REGISTER} component={Register} />
-                    <Route path={ROUTES.ACCOUNT} component={Account} />
+                    <AnonRoute
+                        exact
+                        path={ROUTES.LANDING}
+                        component={Landing}
+                    />
+                    <AnonRoute path={ROUTES.SIGN_IN} component={SignIn} />
+                    <AnonRoute path={ROUTES.REGISTER} component={Register} />
+                    <AuthedRoute path={ROUTES.HOME} component={Home} />
+                    <AuthedRoute path={ROUTES.ACCOUNT} component={Account} />
                 </Router>
             )}
         </AuthUserContext.Provider>

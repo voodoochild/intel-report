@@ -1,7 +1,6 @@
 import React from 'react';
-import { withRedirectIfAuthed } from '../session';
 
-export const Landing = withRedirectIfAuthed(() => {
+export function Landing() {
     return (
         <div>
             <h1>Landing</h1>
@@ -11,4 +10,4 @@ export const Landing = withRedirectIfAuthed(() => {
             </p>
         </div>
     );
-});
+}
