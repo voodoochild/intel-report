@@ -1,9 +1,10 @@
 import React from 'react';
+import { withRequireAuth } from '../session';
 
-export function Account() {
+export const Account = withRequireAuth(() => {
     return (
         <div>
             <h1>Account</h1>
         </div>
     );
-}
+});

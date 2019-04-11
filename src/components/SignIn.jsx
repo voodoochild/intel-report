@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { FirebaseContext } from '../firebase';
 import { RegisterLink } from './Register';
+import { withRedirectIfAuthed } from '../session';
 import * as ROUTES from '../constants/routes';
 
 const initialState = {
@@ -10,7 +11,7 @@ const initialState = {
     error: null
 };
 
-export function SignIn() {
+export const SignIn = withRedirectIfAuthed(() => {
     return (
         <React.Fragment>
             <h1>Sign in</h1>
@@ -18,7 +19,7 @@ export function SignIn() {
             <RegisterLink />
         </React.Fragment>
     );
-}
+});
 
 const SignInForm = withRouter(props => {
     const [state, setState] = useState({ ...initialState });
