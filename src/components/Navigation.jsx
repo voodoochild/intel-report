@@ -1,10 +1,17 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { AuthUserContext } from '../session';
+import { FirebaseContext } from '../firebase';
 import * as ROUTES from '../constants/routes';
 
-export function Navigation() {
+export const Navigation = withRouter(props => {
     const authUser = useContext(AuthUserContext);
+    const firebase = useContext(FirebaseContext);
+
+    function signOut() {
+        firebase.signOut();
+        props.history.push(ROUTES.LANDING);
+    }
 
     return (
         <nav>
@@ -16,7 +23,9 @@ export function Navigation() {
                 )}
                 {authUser && (
                     <li>
-                        <a>Sign out</a>
+                        <button type="button" onClick={signOut}>
+                            Sign out
+                        </button>
                     </li>
                 )}
                 <li>
@@ -31,4 +40,4 @@ export function Navigation() {
             </ul>
         </nav>
     );
-}
+});

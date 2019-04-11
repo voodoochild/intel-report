@@ -29,6 +29,8 @@ export function App() {
         return () => listener();
     }, []);
 
+    console.log(state);
+
     return (
         <AuthUserContext.Provider value={state.authUser}>
             <BrowserRouter>

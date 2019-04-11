@@ -12,15 +12,17 @@ export function Register() {
     );
 }
 
+const initialState = {
+    username: '',
+    email: '',
+    password1: '',
+    password2: '',
+    error: null
+};
+
 const RegisterForm = withRouter(props => {
-    const initialState = {
-        username: '',
-        email: '',
-        password1: '',
-        password2: '',
-        error: null
-    };
     const [state, setState] = useState({ ...initialState });
+    const firebase = useContext(FirebaseContext);
 
     function onChange(e) {
         setState({
@@ -30,13 +32,13 @@ const RegisterForm = withRouter(props => {
     }
 
     async function onSubmit(e) {
-        const firebase = useContext(FirebaseContext);
         const { username, email, password1 } = state;
 
         try {
             const authUser = await firebase.registerUser(email, password1);
+            await firebase.user(authUser.user.uid).set({ username, email });
             setState({ ...initialState });
-            props.history.push(ROUTES.HOME); // TODO: Switch to react-dom hook when available
+            props.history.push(ROUTES.HOME);
         } catch (error) {
             setState({
                 ...state,
@@ -104,6 +106,11 @@ const RegisterForm = withRouter(props => {
         </form>
     );
 });
+
 export function RegisterLink() {
-    return <Link to={ROUTES.REGISTER}>Register</Link>;
+    return (
+        <p>
+            <Link to={ROUTES.REGISTER}>Register</Link>
+        </p>
+    );
 }
